@@ -38,4 +38,5 @@ public class User {
     public void sellStock(String stockName, int quantity) {
         portfolio.reduceStocks(stockName, quantity);
     }
+
 }

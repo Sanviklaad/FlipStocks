@@ -2,19 +2,16 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class Portfolio {
     String userName;
     Map<String,Integer> listOfSocks;
     int portfolioValue;
-    int finalRate;
 
     public Portfolio(String userName) {
         this.userName = userName;
         this.listOfSocks = new HashMap<>();
         this.portfolioValue = 0;
-        this.finalRate = 0;
     }
 
     public Map<String, Integer> getListOfSocks() {

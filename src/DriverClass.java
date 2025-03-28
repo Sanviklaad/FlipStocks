@@ -9,20 +9,32 @@ public class DriverClass {
         service.addStocks("stock2", 200);
         service.addStocks("stock3", 300);
         service.addUser("user", 1000);
-        service.adminLogout();
-        service.buyStock("user", "stock1", 2);
-        service.viewPortfolio("user");
-        service.sellStock("user", "stock1", 1);
-        service.viewPortfolio("user");
+        service.addUser("user2",500);
+//        service.adminLogout();
         service.listAllStockPrices();
-        service.getStockPrice("stock1");
-        service.adminLogin("admin");
+
         service.moveTimeStamp();
-        service.adminLogout();
         service.listAllStockPrices();
-        service.viewPortfolio("user");
-
-
+        service.addUser("user3", 1000);
+        service.buyStock("user3", "stock1", 2);
+        service.viewPortfolio("user3");
+        service.moveTimeStamp();
+        service.sellStock("user3", "stock1", 1);
+        service.viewPortfolio("user3");
+        service.sellStock("user3", "stock1", 2);
+//
+//        service.buyStock("user", "stock1", 2);
+//        service.viewPortfolio("user");
+//        service.sellStock("user", "stock1", 1);
+//        service.viewPortfolio("user");
+//        service.listAllStockPrices();
+//        service.getStockPrice("stock1");
+//        service.adminLogin("admin");
+//        service.moveTimeStamp();
+//        service.adminLogout();
+//        service.listAllStockPrices();
+//        service.getUserDetails("user");
+//        service.viewPortfolio("user");
 
     }
 }

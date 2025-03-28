@@ -6,7 +6,6 @@ import model.Stocks;
 import model.User;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -64,7 +63,7 @@ public class FlipStocksService {
 
     public void moveTimeStamp() {
 
-        if (timeStampCount <= 10) {
+        if (timeStampCount < 10) {
             timeStampCount++;
             Random random = new Random();
             for (Map.Entry<String,Stocks>stocksEntry:stocks.entrySet()) {
@@ -84,7 +83,6 @@ public class FlipStocksService {
     public void userLogin(String username) {
         if (users.containsKey(username)) {
             User user = users.get(username);
-            user.setPortfolio(new Portfolio(username));
         } else {
             System.err.println("User does not exist");
         }
@@ -103,6 +101,9 @@ public class FlipStocksService {
                     int updateBalance = user.getWalletBalance() - totalCost;
                     user.setWalletBalance(updateBalance);
                     user.updatePortfolio(stockName, quantity);
+                    Portfolio portfolio = user.getPortfolio();
+                    portfolio.setPortfolioValue(calculateReturnRate(portfolio));
+                    user.setPortfolio(portfolio);
                     System.out.println("Stocks bought successfully");
                 } else {
                     System.err.println("Not possible");
@@ -129,6 +130,9 @@ public class FlipStocksService {
                 int updateBalance = user.getWalletBalance() + totalCost;
                 user.setWalletBalance(updateBalance);
                 user.sellStock(stockName, quantity);
+                Portfolio portfolio = user.getPortfolio();
+                portfolio.setPortfolioValue(calculateReturnRate(portfolio));
+                user.setPortfolio(portfolio);
                 System.out.println("Stocks sold successfully");
             }else
                 {
@@ -150,12 +154,12 @@ public void viewPortfolio(String userName) {
             for (Map.Entry<String, Integer> entry : stockslist.entrySet()) {
                 Stocks stock = stocks.get(entry.getKey());
                 if (stock != null) {
-                    System.out.println("Portfolio details " + stock.getName() + ": " + stock.getCurrentPrice() + " Quantity " + entry.getValue());
+                    System.out.println("Portfolio details " + stock.getName() + " Price : " + stock.getCurrentPrice() + " Quantity " + entry.getValue()+ " Portfolio value :"+portfolio.getPortfolioValue());
                 } else {
                     System.out.println("Stock " + entry.getKey() + " does not exist in the stocks map.");
                 }
             }
-            portfolio.setPortfolioValue(calculateReturnRate(user));
+            portfolio.setPortfolioValue(calculateReturnRate(portfolio));
         } else {
             System.out.println("Portfolio does not exist.");
         }
@@ -171,6 +175,15 @@ public void viewPortfolio(String userName) {
         }
     }
 
+    public void getUserDetails(String username) {
+        if (users.containsKey(username)) {
+            User user = users.get(username);
+            System.out.println("User details: " + "User name :"+ username+ ", PortFolio :"+ user.getPortfolio().getPortfolioValue()+", Stocks list "+user.getPortfolio().getListOfSocks() + "Wallet Balance :"+ user.getWalletBalance());
+        } else {
+            System.err.println("User does not exist");
+        }
+    }
+
     public double getStockPrice(String stockName) {
         if(stocks.containsKey(stockName)) {
             return stocks.get(stockName).getCurrentPrice();
@@ -179,16 +192,17 @@ public void viewPortfolio(String userName) {
             return -1;
         }
     }
-    public int calculateReturnRate(User user) {
+    public int calculateReturnRate(Portfolio portfolio) {
         double initialInvestment = 0;
         double finalInvestment = 0;
-        Portfolio portfolio = user.getPortfolio();
         if (portfolio != null && portfolio.getListOfSocks() != null) {
             for (Map.Entry<String, Integer> entry : portfolio.getListOfSocks().entrySet()) {
                 String stockName = entry.getKey();
                 int quantity = entry.getValue();
+
                 for (Map.Entry<String,Stocks>stocksEntry:stocks.entrySet()) {
                     Stocks stock = stocksEntry.getValue();
+
                     if (stock.getName().equals(stockName)) {
                         initialInvestment += stock.getInitialPrice() * quantity;
                         finalInvestment += stock.getCurrentPrice() * quantity;
@@ -200,7 +214,7 @@ public void viewPortfolio(String userName) {
         if (initialInvestment == 0) {
             return 0;
         }
-        return (int) ((int)(finalInvestment - initialInvestment) / initialInvestment * 100);
+        return  (int) (((finalInvestment - initialInvestment) / initialInvestment) * 100);
     }
 }
 
